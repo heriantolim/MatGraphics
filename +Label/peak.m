@@ -307,10 +307,11 @@ if ~isfield(S,'String')
 	S.String=cell(N,1);
 	if iscell(S.StringFormat)
 		for j=1:N
-			if ischar(S.StringFormat{j})
-				S.String{j}=sprintf(S.StringFormat{j},px(j));
+			k=S.FormatSpec(j);
+			if ischar(S.StringFormat{k})
+				S.String{j}=sprintf(S.StringFormat{k},px(j));
 			else
-				S.String{j}=S.StringFormat{j}(px(j));
+				S.String{j}=S.StringFormat{k}(px(j));
 			end
 		end
 	elseif ischar(S.StringFormat)
@@ -385,31 +386,31 @@ S.PlotLine=S.PlotLine(:,ix);
 
 %% Main
 % Print peak labels.
-pt=S.FormatSpec;
 py=zeros(N,1);
 for j=N:-1:1
+	k=S.FormatSpec(j);
 	py(j)=max(S.MinYPos,interp1(S.PlotLine(1,:),S.PlotLine(2,:),px(j)));
 	ht(j)=text(ax,px(j),py(j),S.String{j},...
 		'HorizontalAlignment','center',...
 		'VerticalAlignment','bottom',...
 		'Margin',.1);
 	if iscell(S.FontName)
-		ht(j).FontName=S.FontName{pt(j)};
+		ht(j).FontName=S.FontName{k};
 	else
 		ht(j).FontName=S.FontName;
 	end
 	if isscalar(S.FontSize)
 		ht(j).FontSize=S.FontSize;
 	else
-		ht(j).FontSize=S.FontSize(pt(j));
+		ht(j).FontSize=S.FontSize(k);
 	end
 	if iscell(S.FontColor)
-		ht(j).Color=S.FontColor{pt(j)};
+		ht(j).Color=S.FontColor{k};
 	else
 		ht(j).Color=S.FontColor;
 	end
 	if iscell(S.BackgroundColor)
-		ht(j).BackgroundColor=S.BackgroundColor{pt(j)};
+		ht(j).BackgroundColor=S.BackgroundColor{k};
 	else
 		ht(j).BackgroundColor=S.BackgroundColor;
 	end
@@ -471,14 +472,15 @@ ht=ht(ix);
 % Draw vertical lines.
 if all(S.LineWidth>0)
 	for j=N:-1:1
+		k=S.FormatSpec(j);
 		hl(j)=plot(ax,[px(j),px(j)],[yLim(1),py(j)]);
 		if isscalar(S.LineWidth)
 			hl(j).LineWidth=S.LineWidth;
 		else
-			hl(j).LineWidth=S.LineWidth(pt(j));
+			hl(j).LineWidth=S.LineWidth(k);
 		end
 		if iscell(S.LineColor)
-			hl(j).Color=S.LineColor{pt(j)};
+			hl(j).Color=S.LineColor{k};
 		else
 			hl(j).Color=S.LineColor;
 		end
